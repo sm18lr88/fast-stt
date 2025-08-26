@@ -119,6 +119,7 @@ uv sync || (
   echo [ERROR] uv sync failed.
   exit /b 1
 )
+setx PYTHONWARNINGS "ignore::SyntaxWarning" >NUL
  
 echo === Prefetching model to user cache (first run only) ===
 uv run python -m fast_stt.cli_download || echo [warn] Could not pre-download model; it will download on first run.
@@ -135,3 +136,4 @@ echo [DONE] Setup complete.
 echo - Double-click run.bat to launch the app.
 popd
 exit /b 0
+
