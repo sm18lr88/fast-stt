@@ -2,6 +2,9 @@
 
 Extremely fast speech-to-text with very low error-rate. Fully local, no internet required (after installation).
 
+<img width="1415" height="1034" alt="image" src="https://github.com/user-attachments/assets/9e695760-97eb-4de3-acec-f241fd4bd756" />
+
+
 ## Install & Run
 
 ### From source (UV-native)
@@ -104,5 +107,6 @@ Response fields:
 ## Future
 
 My personal goal is to create a responsive alternative to Nuance Dragon using a complete redesign. Just wanted to share this project now.
+
 
 
