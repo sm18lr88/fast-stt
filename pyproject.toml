@@ -1,0 +1,143 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+dependencies = [
+    # Keep NumPy <2.3 so Numba can import cleanly (Numba 0.61.x supports up to NumPy 2.2)
+    "numpy>=1.26,<2.3",
+    # UI
+    "gradio>=5.43.1",
+    "pydub>=0.25",
+    # API server
+    "fastapi>=0.116.0",
+    "uvicorn>=0.35.0",
+    "python-multipart>=0.0.9",
+    # ASR stack
+    "nemo_toolkit[asr]>=2.5.0rc0,<3",
+    # Enable CUDA graphs/conditional nodes where supported; harmless on CPU-only installs
+    "cuda-python>=12.3",
+    # Runtime compatibility with the above NumPy
+    "numba>=0.61.2,<0.62",
+    "llvmlite>=0.44,<0.45",
+    # Optional HF Spaces decorator (we import it)
+    "spaces>=0.27.4",
+    # User-writable cache & temp paths
+    "platformdirs>=4.2",
+    "hf-xet>=1.1.8",
+]
+name = "fast-stt"
+version = "0.1.0"
+description = "Fast STT: one-click Windows-ready Parakeet-TDT ASR with Gradio UI and CUDA auto-setup"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Fast STT Authors" }]
+keywords = [
+    "speech-to-text",
+    "ASR",
+    "Parakeet",
+    "NeMo",
+    "Gradio",
+    "CUDA",
+    "Windows",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Microsoft :: Windows",
+    "Environment :: GPU :: NVIDIA CUDA",
+    "Topic :: Multimedia :: Sound/Audio :: Speech",
+    "Framework :: FastAPI",
+]
+
+[project.scripts]
+fast-stt = "fast_stt.__main__:main"
+fast-stt-api = "fast_stt.__main_api__:main"
+fast-stt-download-model = "fast_stt.cli_download:main"
+
+[project.urls]
+Homepage = "https://github.com/your-org/fast-stt"
+Issues = "https://github.com/your-org/fast-stt/issues"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["fast_stt*"]
+
+[tool.setuptools.package-data]
+fast_stt = ["data/*"]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "pytest-cov>=5.0",
+    "pytest-benchmark>=4.0",
+    "httpx>=0.28",
+    "ruff>=0.4",
+    "mypy>=1.11",
+    "hypothesis>=6.102",
+]
+
+############################################
+# uv project configuration (no "scripts"):
+# use dependency groups for dev tooling
+############################################
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "pytest-cov>=5.0",
+    "pytest-benchmark>=4.0",
+    "httpx>=0.28",
+    "ruff>=0.4",
+    "mypy>=1.11",
+    "hypothesis>=6.102",
+]
+vad = ["webrtcvad>=2.0.10"]
+
+[tool.uv]
+# (optional) ensure dev deps are installed by default with `uv sync`
+default-groups = ["dev"]
+
+[tool.pytest.ini_options]
+addopts = "-q --maxfail=1"
+testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning", "ignore::UserWarning"]
+
+[tool.coverage.run]
+branch = true
+source = ["src/fast_stt"]
+omit = ["tests/*", "*/__main__.py"]
+
+[tool.coverage.report]
+fail_under = 85
+show_missing = true
+skip_covered = true
+exclude_lines = [
+    "pragma: no cover",
+    "if __name__ == .__main__.:",
+    "except Exception as _e:",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+extend-exclude = ["dist", "build", ".venv"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = []
+
+[tool.mypy]
+python_version = "3.12"
+strict = false
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+ignore_missing_imports = true
